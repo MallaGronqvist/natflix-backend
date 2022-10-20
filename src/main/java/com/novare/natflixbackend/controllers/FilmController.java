@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/details_films")
+@RequestMapping("/details-films")
 public class FilmController {
     @Autowired
     private FilmRepository filmRepository;
@@ -26,7 +26,7 @@ public class FilmController {
         return filmRepository.getReferenceById(id);
     }
 
-    @PostMapping
+    @PostMapping("{create}")
     @ResponseStatus(HttpStatus.CREATED)
     public Film create( @RequestBody final Film film) {
         return filmRepository.saveAndFlush(film);

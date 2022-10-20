@@ -11,21 +11,32 @@ import java.util.List;
 public class Type {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     private String type;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "type_id")
-    private List<Content> contentList;
+    @OneToMany(targetEntity = Content.class, cascade= CascadeType.ALL)
+/*    @JoinTable(
+            name = "content_type",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "type_id"))
 
+ */
+    @JoinColumn(name = "type_id", referencedColumnName = "id")
+    private List<Content> contentList;
+/*
+    @JsonIgnore
+    @OneToMany(mappedBy = "typeId", cascade = CascadeType.ALL)
+    private List<Content> contentList;
+*/
     public Type() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -39,5 +50,9 @@ public class Type {
 
     public List<Content> getContentList() {
         return contentList;
+    }
+
+    public void setContentList(List<Content> contentList) {
+        this.contentList = contentList;
     }
 }

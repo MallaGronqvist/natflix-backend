@@ -2,58 +2,76 @@ package com.novare.natflixbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity (name = "details_series")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Series {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private int content_id;
-    private int season_number;
-    private int episode_number;
+    private Integer id;
+    @Column(name = "content_id")
+    private Integer contentId;
+    @Column(name = "season_number")
+    private Integer seasonNumber;
+    @Column(name = "episode_number")
+    private Integer episodeNumber;
     private String title;
     private String summary;
-    private String thumbnail_url;
-    private String video_code;
-
+    @Column(name= "thumbnail_url")
+    private String thumbnailUrl;
+    @Column(name = "video_code")
+    private String videoCode;
+/*
+    @ManyToOne
+    @JoinColumn(name = "series_list")
+    private Content content;
+*/
     public Series() {
     }
+/*
+    public Content getContent() {
+        return content;
+    }
 
-    public int getId() {
+    public void setContent(Content content) {
+        this.content = content;
+    }
+*/
+    public Series(Integer contentId) {
+        this.contentId = contentId;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getContent_id() {
-        return content_id;
+    public Integer getContentId() {
+        return contentId;
     }
 
-    public void setContent_id(int content_id) {
-        this.content_id = content_id;
+    public void setContentId(Integer contentId) {
+        this.contentId = contentId;
     }
 
-    public int getSeason_number() {
-        return season_number;
+    public Integer getSeasonNumber() {
+        return seasonNumber;
     }
 
-    public void setSeason_number(int season_number) {
-        this.season_number = season_number;
+    public void setSeasonNumber(Integer seasonNumber) {
+        this.seasonNumber = seasonNumber;
     }
 
-    public int getEpisode_number() {
-        return episode_number;
+    public Integer getEpisodeNumber() {
+        return episodeNumber;
     }
 
-    public void setEpisode_number(int episode_number) {
-        this.episode_number = episode_number;
+    public void setEpisodeNumber(Integer episodeNumber) {
+        this.episodeNumber = episodeNumber;
     }
 
     public String getTitle() {
@@ -72,19 +90,19 @@ public class Series {
         this.summary = summary;
     }
 
-    public String getThumbnail_url() {
-        return thumbnail_url;
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
     }
 
-    public void setThumbnail_url(String thumbnail_url) {
-        this.thumbnail_url = thumbnail_url;
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
-    public String getVideo_code() {
-        return video_code;
+    public String getVideoCode() {
+        return videoCode;
     }
 
-    public void setVideo_code(String video_code) {
-        this.video_code = video_code;
+    public void setVideoCode(String videoCode) {
+        this.videoCode = videoCode;
     }
 }

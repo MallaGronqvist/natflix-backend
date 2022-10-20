@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/details_series")
+@RequestMapping("/details-series")
 public class SeriesController {
     @Autowired
     private SeriesRepository seriesRepository;
@@ -25,7 +25,7 @@ public class SeriesController {
         return seriesRepository.getReferenceById(id);
     }
 
-    @PostMapping
+    @PostMapping("{create}")
     @ResponseStatus(HttpStatus.CREATED)
     public Series create( @RequestBody final Series series) {
         return seriesRepository.saveAndFlush(series);
@@ -36,6 +36,7 @@ public class SeriesController {
         seriesRepository.deleteById(id);
     }
 
+    // With or without id?
     @RequestMapping(value = "{id}", method = RequestMethod.PUT)
     public Series update(@PathVariable Integer id, @RequestBody Series series) {
         // TODO: Add validation that all attributes are passed in, otherwise return 400 bad payload.

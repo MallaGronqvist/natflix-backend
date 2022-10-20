@@ -1,7 +1,11 @@
 package com.novare.natflixbackend.controllers;
 
 import com.novare.natflixbackend.models.Content;
+import com.novare.natflixbackend.models.Film;
+import com.novare.natflixbackend.models.Series;
 import com.novare.natflixbackend.repositories.ContentRepository;
+import com.novare.natflixbackend.repositories.FilmRepository;
+import com.novare.natflixbackend.repositories.SeriesRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ public class ContentController {
     @Autowired
     private ContentRepository contentRepository;
 
+
     @GetMapping
     public List<Content> list() { return contentRepository.findAll(); }
 
@@ -24,9 +29,27 @@ public class ContentController {
         return contentRepository.getReferenceById(id);
     }
 
-    @PostMapping
+    @GetMapping
+    @RequestMapping({"series"})
+    public List<Content> getSeries() {
+        return contentRepository.findByTypeId(1);
+    }
+
+    @GetMapping
+    @RequestMapping({"movies"})
+    public List<Content> getMovies() {
+        return contentRepository.findByTypeId(2);
+    }
+
+    @GetMapping
+    @RequestMapping({"documentaries"})
+    public List<Content> getDocumentaries() {
+        return contentRepository.findByTypeId(3);
+    }
+
+    @PostMapping({"create"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Content create( @RequestBody final Content content) {
+    public Content create( @RequestBody Content content) {
         return contentRepository.saveAndFlush(content);
     }
 

@@ -2,44 +2,47 @@ package com.novare.natflixbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity(name = "details_films")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Film {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private int content_id;
-    private String video_code;
+    private Integer id;
+    @Column(name = "content_id")
+    private Integer contentId;
+    @Column(name = "video_code")
+    private String videoCode;
+
+  //  @OneToOne(mappedBy = "id", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "film")
+    private Content content;
 
     public Film() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getContent_id() {
-        return content_id;
+    public Integer getContentId() {
+        return contentId;
     }
 
-    public void setContent_id(int content_id) {
-        this.content_id = content_id;
+    public void setContentId(Integer contentId) {
+        this.contentId = contentId;
     }
 
-    public String getVideo_code() {
-        return video_code;
+    public String getVideoCode() {
+        return videoCode;
     }
 
-    public void setVideo_code(String video_code) {
-        this.video_code = video_code;
+    public void setVideoCode(String videoCode) {
+        this.videoCode = videoCode;
     }
 }

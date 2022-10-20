@@ -1,31 +1,70 @@
 package com.novare.natflixbackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity (name = "content")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "id")
+    private Integer id;
+    @Column(name = "title")
     private String title;
-    private int type_id;
-    private int category_id;
+    @Column(name="type_id")
+    private Integer typeId;
+    @Column(name = "category_id")
+    private Integer categoryId;
+    @Column(name = "summary")
     private String summary;
-    private String logo_url;
-    private String banner_url;
-    private String thumbnail_url;
+    @Column(name = "logo_url")
+    private String logoUrl;
+    @Column(name = "banner_url")
+    private String bannerUrl;
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
+
+    @JsonIgnore
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name="id")
+    private Film film;
+
+    @JsonIgnore
+    @OneToMany(cascade= CascadeType.ALL)
+    @JoinTable(
+            name = "content_series",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name = "content_id"))
+    private List<Series> seriesList;
+
+    public Film getFilm() {
+        return film;
+    }
+
+    public void setFilm(Film film) {
+        this.film = film;
+    }
+
+   public List<Series> getSeriesList() {
+        return seriesList;
+    }
+
+    public void setSeriesList(List<Series> seriesList) {
+        this.seriesList = seriesList;
+    }
 
     public Content() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -37,20 +76,20 @@ public class Content {
         this.title = title;
     }
 
-    public int getType_id() {
-        return type_id;
+    public Integer getTypeId() {
+        return typeId;
     }
 
-    public void setType_id(int type_id) {
-        this.type_id = type_id;
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
     }
 
-    public int getCategory_id() {
-        return category_id;
+    public Integer getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory_id(int category_id) {
-        this.category_id = category_id;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = Integer.valueOf(categoryId);
     }
 
     public String getSummary() {
@@ -61,28 +100,28 @@ public class Content {
         this.summary = summary;
     }
 
-    public String getLogo_url() {
-        return logo_url;
+    public String getLogoUrl() {
+        return logoUrl;
     }
 
-    public void setLogo_url(String logo_url) {
-        this.logo_url = logo_url;
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 
-    public String getBanner_url() {
-        return banner_url;
+    public String getBannerUrl() {
+        return bannerUrl;
     }
 
-    public void setBanner_url(String banner_url) {
-        this.banner_url = banner_url;
+    public void setBannerUrl(String bannerUrl) {
+        this.bannerUrl = bannerUrl;
     }
 
-    public String getThumbnail_url() {
-        return thumbnail_url;
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
     }
 
-    public void setThumbnail_url(String thumbnail_url) {
-        this.thumbnail_url = thumbnail_url;
+    public void setThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
     }
 
 }
