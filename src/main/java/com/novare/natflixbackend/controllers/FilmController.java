@@ -33,9 +33,10 @@ public class FilmController {
         return filmRepository.saveAndFlush(film);
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public Film update(@PathVariable Integer id, @RequestBody Film film) {
+    @RequestMapping(value = {"update"}, method = RequestMethod.PUT)
+    public Film update(@RequestBody Film film) {
         // TODO: Add validation that all attributes are passed in, otherwise return 400 bad payload.
+        int id = film.getId();
         Film existingFilm = filmRepository.getReferenceById(id);
         BeanUtils.copyProperties(film, existingFilm, "id");
         return filmRepository.saveAndFlush(existingFilm);

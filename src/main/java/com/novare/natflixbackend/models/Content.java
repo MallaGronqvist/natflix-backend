@@ -40,6 +40,11 @@ public class Content {
     private List<Series> seriesList;
 
  */
+    // This also doesn't work. Says: repeated column
+    @JsonIgnore
+    @OneToMany(mappedBy = "content")
+    private List<Series>seriesList;
+
     public Film getFilm() {
         return film;
     }
@@ -47,7 +52,7 @@ public class Content {
     public void setFilm(Film film) {
         this.film = film;
     }
-/*
+
    public List<Series> getSeriesList() {
         return seriesList;
     }
@@ -56,7 +61,6 @@ public class Content {
         this.seriesList = seriesList;
     }
 
- */
 
     public Content() {
     }

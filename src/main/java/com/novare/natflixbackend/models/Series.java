@@ -22,6 +22,9 @@ public class Series {
     private String thumbnailUrl;
     @Column(name = "video_code")
     private String videoCode;
+
+    @ManyToOne
+    private Content content;
 /*
     @ManyToOne
     @JoinColumn(name = "series_list")
@@ -29,7 +32,7 @@ public class Series {
 */
     public Series() {
     }
-/*
+
     public Content getContent() {
         return content;
     }
@@ -37,7 +40,7 @@ public class Series {
     public void setContent(Content content) {
         this.content = content;
     }
-*/
+
     public Series(Integer contentId) {
         this.contentId = contentId;
     }

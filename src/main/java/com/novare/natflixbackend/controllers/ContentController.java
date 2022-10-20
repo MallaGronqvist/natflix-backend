@@ -53,10 +53,11 @@ public class ContentController {
         return contentRepository.saveAndFlush(content);
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Integer id) {
         // Check for children records before deleting.
-        // This deletes only records without children records.
+        Content content = contentRepository.getReferenceById(id);
+
         contentRepository.deleteById(id);
     }
 
