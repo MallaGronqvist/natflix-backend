@@ -1,6 +1,6 @@
 package com.novare.natflixbackend.controllers;
 
-import com.novare.natflixbackend.models.Film;
+import com.novare.natflixbackend.models.Content;
 import com.novare.natflixbackend.models.Series;
 import com.novare.natflixbackend.repositories.SeriesRepository;
 import org.springframework.beans.BeanUtils;
@@ -20,12 +20,13 @@ public class SeriesController {
     public List<Series> list() { return seriesRepository.findAll(); }
 
     @GetMapping
-    @RequestMapping("{id}")
-    public Series get(@PathVariable Integer id) {
-        return seriesRepository.getReferenceById(id);
+    @RequestMapping("{content_id}")
+    public List<Series> get(@PathVariable Integer content_id) {
+
+        return seriesRepository.findByContentId(content_id);
     }
 
-    @PostMapping("{create}")
+    @PostMapping({"create"})
     @ResponseStatus(HttpStatus.CREATED)
     public Series create( @RequestBody final Series series) {
         return seriesRepository.saveAndFlush(series);
@@ -36,10 +37,10 @@ public class SeriesController {
         seriesRepository.deleteById(id);
     }
 
-    // With or without id?
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public Series update(@PathVariable Integer id, @RequestBody Series series) {
+    @RequestMapping(value = {"update"}, method = RequestMethod.PUT)
+    public Series update(@RequestBody Series series) {
         // TODO: Add validation that all attributes are passed in, otherwise return 400 bad payload.
+        Integer id = series.getId();
         Series existingSeries = seriesRepository.getReferenceById(id);
         BeanUtils.copyProperties(series, existingSeries, "id");
         return seriesRepository.saveAndFlush(existingSeries);

@@ -15,13 +15,7 @@ public class Type {
     private String type;
 
     @JsonIgnore
-    @OneToMany(targetEntity = Content.class, cascade= CascadeType.ALL)
-/*    @JoinTable(
-            name = "content_type",
-            joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns = @JoinColumn(name = "type_id"))
-
- */
+    @OneToMany(targetEntity = Content.class)
     @JoinColumn(name = "type_id", referencedColumnName = "id")
     private List<Content> contentList;
 /*

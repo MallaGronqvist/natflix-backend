@@ -21,12 +21,13 @@ public class FilmController {
     public List<Film> list() { return filmRepository.findAll(); }
 
     @GetMapping
-    @RequestMapping("{id}")
-    public Film get(@PathVariable Integer id) {
-        return filmRepository.getReferenceById(id);
+    @RequestMapping("{content_id}")
+    public Film get(@PathVariable Integer content_id) {
+
+        return filmRepository.findByContentId(content_id);
     }
 
-    @PostMapping("{create}")
+    @PostMapping({"create"})
     @ResponseStatus(HttpStatus.CREATED)
     public Film create( @RequestBody final Film film) {
         return filmRepository.saveAndFlush(film);

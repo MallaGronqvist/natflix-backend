@@ -60,9 +60,10 @@ public class ContentController {
         contentRepository.deleteById(id);
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.PUT)
-    public Content update(@PathVariable Integer id, @RequestBody Content content) {
+    @RequestMapping(value = {"update"}, method = RequestMethod.PUT)
+    public Content update(@RequestBody Content content) {
         // TODO: Add validation that all attributes are passed in, otherwise return 400 bad payload.
+        Integer id = content.getId();
         Content existingContent = contentRepository.getReferenceById(id);
         BeanUtils.copyProperties(content, existingContent, "id");
         return contentRepository.saveAndFlush(existingContent);

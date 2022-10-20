@@ -33,14 +33,13 @@ public class Content {
     @JoinColumn(name="id")
     private Film film;
 
+/*  Removed this to make updating series work. Otherwise, error with contentId=null.
     @JsonIgnore
-    @OneToMany(cascade= CascadeType.ALL)
-    @JoinTable(
-            name = "content_series",
-            joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns = @JoinColumn(name = "content_id"))
+    @OneToMany(targetEntity = Series.class, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "content_id", referencedColumnName = "id")
     private List<Series> seriesList;
 
+ */
     public Film getFilm() {
         return film;
     }
@@ -48,7 +47,7 @@ public class Content {
     public void setFilm(Film film) {
         this.film = film;
     }
-
+/*
    public List<Series> getSeriesList() {
         return seriesList;
     }
@@ -56,6 +55,8 @@ public class Content {
     public void setSeriesList(List<Series> seriesList) {
         this.seriesList = seriesList;
     }
+
+ */
 
     public Content() {
     }
@@ -88,8 +89,8 @@ public class Content {
         return categoryId;
     }
 
-    public void setCategoryId(int categoryId) {
-        this.categoryId = Integer.valueOf(categoryId);
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getSummary() {
