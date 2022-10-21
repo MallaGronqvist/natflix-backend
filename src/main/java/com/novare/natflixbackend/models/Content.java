@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity (name = "content")
@@ -29,22 +30,39 @@ public class Content {
     private String thumbnailUrl;
 
     @JsonIgnore
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name="id")
+    @OneToOne(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
+//    @JoinColumn(name="id")
     private Film film;
 
-/*  Removed this to make updating series work. Otherwise, error with contentId=null.
     @JsonIgnore
-    @OneToMany(targetEntity = Series.class, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Series> seriesList = new ArrayList<>();
+    /*
+ // Removed this to make updating series work. Otherwise, error with contentId=null.
+    @JsonIgnore
+    @OneToMany(targetEntity = Series.class, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "content_id", referencedColumnName = "id")
     private List<Series> seriesList;
 
- */
-    // This also doesn't work. Says: repeated column
-    @JsonIgnore
-    @OneToMany(mappedBy = "content")
-    private List<Series>seriesList;
 
+        // This also doesn't work. Says: repeated column
+        @JsonIgnore
+        @OneToMany(mappedBy = "content")
+        private List<Series>seriesList;
+    */
+
+    public Content addSeries(Series series)
+    {
+        seriesList.add(series);
+        series.setContent(this);
+        return this;
+    }
+    public Content removeSeries(Series series)
+    {
+        seriesList.remove(series);
+        series.setContent(null);
+        return this;
+    }
     public Film getFilm() {
         return film;
     }
@@ -58,9 +76,9 @@ public class Content {
     }
 
     public void setSeriesList(List<Series> seriesList) {
-        this.seriesList = seriesList;
+ //       this.seriesList = seriesList;
+        this.seriesList.addAll(seriesList);
     }
-
 
     public Content() {
     }

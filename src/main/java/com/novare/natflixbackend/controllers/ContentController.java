@@ -55,7 +55,7 @@ public class ContentController {
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Integer id) {
-        // Check for children records before deleting.
+
         Content content = contentRepository.getReferenceById(id);
 
         contentRepository.deleteById(id);

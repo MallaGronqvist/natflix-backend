@@ -1,5 +1,6 @@
 package com.novare.natflixbackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -10,7 +11,7 @@ public class Series {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "content_id")
+    @Column(name = "content_id", insertable = false, updatable = false, nullable = false)
     private Integer contentId;
     @Column(name = "season_number")
     private Integer seasonNumber;
@@ -23,13 +24,17 @@ public class Series {
     @Column(name = "video_code")
     private String videoCode;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     private Content content;
-/*
-    @ManyToOne
-    @JoinColumn(name = "series_list")
-    private Content content;
-*/
+    /*
+        @ManyToOne
+        private Content content;
+
+        @ManyToOne
+        @JoinColumn(name = "series_list")
+        private Content content;
+    */
     public Series() {
     }
 
