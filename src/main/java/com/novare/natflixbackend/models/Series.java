@@ -27,14 +27,7 @@ public class Series {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Content content;
-    /*
-        @ManyToOne
-        private Content content;
 
-        @ManyToOne
-        @JoinColumn(name = "series_list")
-        private Content content;
-    */
     public Series() {
     }
 

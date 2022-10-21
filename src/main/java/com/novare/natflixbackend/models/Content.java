@@ -37,19 +37,6 @@ public class Content {
     @JsonIgnore
     @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Series> seriesList = new ArrayList<>();
-    /*
- // Removed this to make updating series work. Otherwise, error with contentId=null.
-    @JsonIgnore
-    @OneToMany(targetEntity = Series.class, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "content_id", referencedColumnName = "id")
-    private List<Series> seriesList;
-
-
-        // This also doesn't work. Says: repeated column
-        @JsonIgnore
-        @OneToMany(mappedBy = "content")
-        private List<Series>seriesList;
-    */
 
     public Content addSeries(Series series)
     {
