@@ -2,6 +2,7 @@ package com.novare.natflixbackend.controllers;
 
 import com.novare.natflixbackend.models.Content;
 import com.novare.natflixbackend.models.Series;
+import com.novare.natflixbackend.repositories.ContentRepository;
 import com.novare.natflixbackend.repositories.SeriesRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import java.util.List;
 public class SeriesController {
     @Autowired
     private SeriesRepository seriesRepository;
+    @Autowired
+    private ContentRepository contentRepository;
 
     @GetMapping
     public List<Series> list() { return seriesRepository.findAll(); }
@@ -26,9 +29,14 @@ public class SeriesController {
         return seriesRepository.findByContentId(content_id);
     }
 
-    @PostMapping({"create"})
+    @PostMapping("create")
     @ResponseStatus(HttpStatus.CREATED)
     public Series create( @RequestBody final Series series) {
+        Integer contentId = series.getContentId();
+        Content content = contentRepository.getReferenceById(contentId);
+        series.setContent(content);
+        content.addSeries(series);
+        contentRepository.saveAndFlush(content);
         return seriesRepository.saveAndFlush(series);
     }
 
@@ -37,12 +45,15 @@ public class SeriesController {
         seriesRepository.deleteById(id);
     }
 
-    @RequestMapping(value = {"update"}, method = RequestMethod.PUT)
+    @RequestMapping(value = "update", method = RequestMethod.PUT)
     public Series update(@RequestBody Series series) {
         // TODO: Add validation that all attributes are passed in, otherwise return 400 bad payload.
         Integer id = series.getId();
         Series existingSeries = seriesRepository.getReferenceById(id);
+        Integer contentId = series.getContentId();
+        Content content = contentRepository.getReferenceById(contentId);
         BeanUtils.copyProperties(series, existingSeries, "id");
+        existingSeries.setContent(content);
         return seriesRepository.saveAndFlush(existingSeries);
     }
 }

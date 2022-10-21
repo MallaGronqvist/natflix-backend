@@ -44,12 +44,14 @@ public class Content {
         series.setContent(this);
         return this;
     }
+
     public Content removeSeries(Series series)
     {
         seriesList.remove(series);
         series.setContent(null);
         return this;
     }
+
     public Film getFilm() {
         return film;
     }
