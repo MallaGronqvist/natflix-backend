@@ -7,6 +7,7 @@ import com.novare.natflixbackend.repositories.SeriesRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,13 +32,26 @@ public class SeriesController {
 
     @PostMapping("create")
     @ResponseStatus(HttpStatus.CREATED)
-    public Series create( @RequestBody final Series series) {
+    public ResponseEntity<Series> create(@RequestBody final Series series) {
+        ResponseEntity<Series> BAD_REQUEST = getSeriesResponseEntityForDuplicate(series);
+        if (BAD_REQUEST != null) return BAD_REQUEST;
+
         Integer contentId = series.getContentId();
         Content content = contentRepository.getReferenceById(contentId);
         series.setContent(content);
-    //    content.addSeries(series);
         contentRepository.saveAndFlush(content);
-        return seriesRepository.saveAndFlush(series);
+        return new ResponseEntity<>(seriesRepository.saveAndFlush(series), HttpStatus.CREATED);
+    }
+
+    private ResponseEntity<Series> getSeriesResponseEntityForDuplicate(Series series) {
+        // Check if season and episode number already in database
+        Series episodeFound = seriesRepository.findByContentIdAndSeasonNumberAndEpisodeNumber(
+                series.getContentId(), series.getSeasonNumber(), series.getEpisodeNumber());
+        // If found return bad payload
+        if(episodeFound != null){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        return null;
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.DELETE)
@@ -46,14 +60,18 @@ public class SeriesController {
     }
 
     @RequestMapping(value = "update", method = RequestMethod.PUT)
-    public Series update(@RequestBody Series series) {
+    public ResponseEntity<Series> update(@RequestBody Series series) {
         // TODO: Add validation that all attributes are passed in, otherwise return 400 bad payload.
+
+        ResponseEntity<Series> BAD_REQUEST = getSeriesResponseEntityForDuplicate(series);
+        if (BAD_REQUEST != null) return BAD_REQUEST;
+
         Integer id = series.getId();
         Series existingSeries = seriesRepository.getReferenceById(id);
         Integer contentId = series.getContentId();
         Content content = contentRepository.getReferenceById(contentId);
         BeanUtils.copyProperties(series, existingSeries, "id");
         existingSeries.setContent(content);
-        return seriesRepository.saveAndFlush(existingSeries);
+        return new ResponseEntity<>(seriesRepository.saveAndFlush(existingSeries), HttpStatus.OK);
     }
 }

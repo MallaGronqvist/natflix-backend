@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface SeriesRepository extends JpaRepository<Series, Integer> {
     List<Series> findByContentId(Integer content_id);
+
+    Series findByContentIdAndSeasonNumberAndEpisodeNumber(Integer ContentId, Integer seasonNumber, Integer episodeNumber);
 }
