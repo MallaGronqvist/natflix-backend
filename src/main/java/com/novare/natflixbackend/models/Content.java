@@ -30,12 +30,12 @@ public class Content {
     private String thumbnailUrl;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
-//    @JoinColumn(name="id")
+    @OneToOne(mappedBy = "content", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @PrimaryKeyJoinColumn
     private Film film;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "content", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "content", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Series> seriesList = new ArrayList<>();
 
     public Content addSeries(Series series)
@@ -49,6 +49,18 @@ public class Content {
     {
         seriesList.remove(series);
         series.setContent(null);
+        return this;
+    }
+
+    public Content addFilm(Film film) {
+        setFilm(film);
+        film.setContent(this);
+        return this;
+    }
+
+    public Content removeFilm(Film film) {
+        setFilm(null);
+        film.setContent(null);
         return this;
     }
 

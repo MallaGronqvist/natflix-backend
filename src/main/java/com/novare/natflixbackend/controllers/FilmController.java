@@ -36,7 +36,7 @@ public class FilmController {
         Integer contentId = film.getContentId();
         Content content = contentRepository.getReferenceById(contentId);
         film.setContent(content);
-        content.setFilm(film);
+ //       content.setFilm(film);
         contentRepository.saveAndFlush(content);
         return filmRepository.saveAndFlush(film);
     }
@@ -48,9 +48,11 @@ public class FilmController {
         Film existingFilm = filmRepository.getReferenceById(id);
         int contentId = film.getContentId();
         Content content = contentRepository.getReferenceById(contentId);
+
         BeanUtils.copyProperties(film, existingFilm, "id");
+
         existingFilm.setContent(content);
-        content.setFilm(existingFilm);
+
         return filmRepository.saveAndFlush(existingFilm);
     }
 }

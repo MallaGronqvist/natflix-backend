@@ -35,7 +35,7 @@ public class SeriesController {
         Integer contentId = series.getContentId();
         Content content = contentRepository.getReferenceById(contentId);
         series.setContent(content);
-        content.addSeries(series);
+    //    content.addSeries(series);
         contentRepository.saveAndFlush(content);
         return seriesRepository.saveAndFlush(series);
     }

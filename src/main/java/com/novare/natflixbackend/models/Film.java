@@ -16,10 +16,14 @@ public class Film {
     @Column(name = "video_code")
     private String videoCode;
 
-    //  @OneToOne(mappedBy = "id", fetch = FetchType.LAZY)
+
     @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "content_id")
     private Content content;
+
+    public Film() {
+    }
 
     public Content getContent() {
         return content;
@@ -27,9 +31,6 @@ public class Film {
 
     public void setContent(Content content) {
         this.content = content;
-    }
-
-    public Film() {
     }
 
     public Integer getId() {
