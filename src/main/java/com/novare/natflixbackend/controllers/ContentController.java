@@ -66,22 +66,22 @@ public class ContentController {
         // TODO: Add validation that all attributes are passed in, otherwise return 400 bad payload.
         Integer id = content.getId();
         Content existingContent = contentRepository.getReferenceById(id);
-
+/*
         Film film = null;
         if((existingContent.getTypeId() == 2 || existingContent.getTypeId() == 3)
                 && existingContent.getFilm() != null) {
             film = existingContent.getFilm();
         }
 
-
+*/
 
         BeanUtils.copyProperties(content, existingContent, "id");
-
+/*
         if((existingContent.getTypeId() == 2 || existingContent.getTypeId() == 3)
                 && film != null) {
             existingContent.addFilm(film);
         }
-
+*/
         return contentRepository.saveAndFlush(existingContent);
     }
 }
