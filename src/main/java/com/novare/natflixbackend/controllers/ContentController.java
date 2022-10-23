@@ -1,24 +1,28 @@
 package com.novare.natflixbackend.controllers;
 
 import com.novare.natflixbackend.models.Content;
-import com.novare.natflixbackend.models.Film;
-import com.novare.natflixbackend.models.Series;
 import com.novare.natflixbackend.repositories.ContentRepository;
-import com.novare.natflixbackend.repositories.FilmRepository;
-import com.novare.natflixbackend.repositories.SeriesRepository;
+import com.novare.natflixbackend.uploadServices.IStorageService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PUT})
 @RestController
 @RequestMapping("/content")
 public class ContentController {
     @Autowired
     private ContentRepository contentRepository;
+    private final IStorageService iStorageService;
 
+    public ContentController(IStorageService iStorageService) {
+        this.iStorageService = iStorageService;
+    }
 
     @GetMapping
     public List<Content> list() { return contentRepository.findAll(); }
@@ -30,27 +34,33 @@ public class ContentController {
     }
 
     @GetMapping
-    @RequestMapping({"series"})
+    @RequestMapping("series")
     public List<Content> getSeries() {
         return contentRepository.findByTypeId(1);
     }
 
     @GetMapping
-    @RequestMapping({"movies"})
+    @RequestMapping("movies")
     public List<Content> getMovies() {
         return contentRepository.findByTypeId(2);
     }
 
     @GetMapping
-    @RequestMapping({"documentaries"})
+    @RequestMapping("documentaries")
     public List<Content> getDocumentaries() {
         return contentRepository.findByTypeId(3);
     }
 
-    @PostMapping({"create"})
-    @ResponseStatus(HttpStatus.CREATED)
-    public Content create( @RequestBody Content content) {
-        return contentRepository.saveAndFlush(content);
+    @PostMapping(name = "create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody  // @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Content> create(@RequestBody Content content) {
+        String logoURL = UploadFilesController.uploadFile(content.getLogoUrl());
+        content.setLogoUrl(logoURL);
+        String bannerURL = UploadFilesController.uploadFile(content.getBannerUrl());
+        content.setBannerUrl(bannerURL);
+        String thumbnailURL = UploadFilesController.uploadFile(content.getThumbnailUrl());
+        content.setThumbnailUrl(thumbnailURL);
+        return new ResponseEntity<>(contentRepository.saveAndFlush(content), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.DELETE)
@@ -61,27 +71,14 @@ public class ContentController {
         contentRepository.deleteById(id);
     }
 
-    @RequestMapping(value = {"update"}, method = RequestMethod.PUT)
+    @RequestMapping(value = "update", method = RequestMethod.PUT)
     public Content update(@RequestBody Content content) {
         // TODO: Add validation that all attributes are passed in, otherwise return 400 bad payload.
         Integer id = content.getId();
         Content existingContent = contentRepository.getReferenceById(id);
-/*
-        Film film = null;
-        if((existingContent.getTypeId() == 2 || existingContent.getTypeId() == 3)
-                && existingContent.getFilm() != null) {
-            film = existingContent.getFilm();
-        }
-
-*/
 
         BeanUtils.copyProperties(content, existingContent, "id");
-/*
-        if((existingContent.getTypeId() == 2 || existingContent.getTypeId() == 3)
-                && film != null) {
-            existingContent.addFilm(film);
-        }
-*/
+
         return contentRepository.saveAndFlush(existingContent);
     }
 }
