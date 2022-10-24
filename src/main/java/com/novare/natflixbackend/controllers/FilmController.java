@@ -26,10 +26,19 @@ public class FilmController {
     public List<Film> list() { return filmRepository.findAll(); }
 
     @GetMapping
-    @RequestMapping("{content_id}")
-    public Film get(@PathVariable Integer content_id) {
+    @RequestMapping("{contentId}")
+    public Film get(@PathVariable Integer contentId) {
+        Film film = filmRepository.findByContentId(contentId);
 
-        return filmRepository.findByContentId(content_id);
+        if (film == null) {
+            film = new Film();
+            film.setContentId(contentId);
+            // Do I need to set the content as well?
+            Content content = contentRepository.getReferenceById(contentId);
+            film.setContent(content);
+            filmRepository.saveAndFlush(film);
+        }
+        return film;
     }
 
     @PostMapping(name = "create")

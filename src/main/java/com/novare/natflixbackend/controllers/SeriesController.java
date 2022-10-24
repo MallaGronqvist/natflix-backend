@@ -4,6 +4,7 @@ import com.novare.natflixbackend.models.Content;
 import com.novare.natflixbackend.models.Series;
 import com.novare.natflixbackend.repositories.ContentRepository;
 import com.novare.natflixbackend.repositories.SeriesRepository;
+import com.novare.natflixbackend.uploadServices.IStorageService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,11 @@ public class SeriesController {
     private SeriesRepository seriesRepository;
     @Autowired
     private ContentRepository contentRepository;
+    private final IStorageService iStorageService;
+
+    public SeriesController(IStorageService iStorageService) {
+        this.iStorageService = iStorageService;
+    }
 
     @GetMapping
     public List<Series> list() { return seriesRepository.findAll(); }
@@ -40,6 +46,12 @@ public class SeriesController {
         Integer contentId = series.getContentId();
         Content content = contentRepository.getReferenceById(contentId);
         series.setContent(content);
+
+        if(series.getThumbnailUrl() != null) {
+            String thumbnailURL = UploadFilesController.uploadFile(series.getThumbnailUrl());
+            series.setThumbnailUrl(thumbnailURL);
+        }
+
         contentRepository.saveAndFlush(content);
         return new ResponseEntity<>(seriesRepository.saveAndFlush(series), HttpStatus.CREATED);
     }
@@ -57,6 +69,14 @@ public class SeriesController {
 
     @RequestMapping(value = "delete/{id}", method = RequestMethod.DELETE)
     public void delete(@PathVariable Integer id) {
+        Series series = seriesRepository.getReferenceById(id);
+        try {
+            String thumbnailUrl = series.getThumbnailUrl();
+            iStorageService.delete(thumbnailUrl);
+        } catch (Exception e) {
+
+        }
+
         seriesRepository.deleteById(id);
     }
 
@@ -64,11 +84,17 @@ public class SeriesController {
     public ResponseEntity<Series> update(@RequestBody Series series) {
         // TODO: Add validation that all attributes are passed in, otherwise return 400 bad payload.
 
-        ResponseEntity<Series> BAD_REQUEST = getSeriesResponseEntityForDuplicate(series);
-        if (BAD_REQUEST != null) return BAD_REQUEST;
-
         Integer id = series.getId();
         Series existingSeries = seriesRepository.getReferenceById(id);
+
+        if( (existingSeries.getThumbnailUrl() != null
+                && series.getThumbnailUrl() != null
+                && ! existingSeries.getThumbnailUrl().equals(series.getThumbnailUrl()))
+                || (existingSeries.getThumbnailUrl() == null && series.getThumbnailUrl() != null)) {
+            String thumbnailURL = UploadFilesController.uploadFile(series.getThumbnailUrl());
+            series.setThumbnailUrl(thumbnailURL);
+        }
+
         Integer contentId = series.getContentId();
         Content content = contentRepository.getReferenceById(contentId);
         BeanUtils.copyProperties(series, existingSeries, "id");

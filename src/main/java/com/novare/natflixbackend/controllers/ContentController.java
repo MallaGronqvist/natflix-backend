@@ -5,6 +5,7 @@ import com.novare.natflixbackend.repositories.ContentRepository;
 import com.novare.natflixbackend.uploadServices.IStorageService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,15 +52,22 @@ public class ContentController {
         return contentRepository.findByTypeId(3);
     }
 
-    @PostMapping(name = "create", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody  // @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping(value = "create", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
     public ResponseEntity<Content> create(@RequestBody Content content) {
-        String logoURL = UploadFilesController.uploadFile(content.getLogoUrl());
-        content.setLogoUrl(logoURL);
-        String bannerURL = UploadFilesController.uploadFile(content.getBannerUrl());
-        content.setBannerUrl(bannerURL);
-        String thumbnailURL = UploadFilesController.uploadFile(content.getThumbnailUrl());
-        content.setThumbnailUrl(thumbnailURL);
+        if(content.getLogoUrl() != null) {
+            String logoURL = UploadFilesController.uploadFile(content.getLogoUrl());
+            content.setLogoUrl(logoURL);
+        }
+        if(content.getBannerUrl() != null) {
+            String bannerURL = UploadFilesController.uploadFile(content.getBannerUrl());
+            content.setBannerUrl(bannerURL);
+        }
+        if(content.getThumbnailUrl() != null) {
+            String thumbnailURL = UploadFilesController.uploadFile(content.getThumbnailUrl());
+            content.setThumbnailUrl(thumbnailURL);
+        }
+
         return new ResponseEntity<>(contentRepository.saveAndFlush(content), HttpStatus.CREATED);
     }
 
@@ -67,15 +75,47 @@ public class ContentController {
     public void delete(@PathVariable Integer id) {
 
         Content content = contentRepository.getReferenceById(id);
+        try {
+            iStorageService.delete(content.getLogoUrl());
+            iStorageService.delete(content.getBannerUrl());
+            iStorageService.delete(content.getThumbnailUrl());
+        } catch (Exception e) {
+
+        }
 
         contentRepository.deleteById(id);
     }
 
-    @RequestMapping(value = "update", method = RequestMethod.PUT)
+    @RequestMapping(value = "update", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public Content update(@RequestBody Content content) {
         // TODO: Add validation that all attributes are passed in, otherwise return 400 bad payload.
         Integer id = content.getId();
         Content existingContent = contentRepository.getReferenceById(id);
+
+        // If image paths don't match, upload new image
+        if( (existingContent.getLogoUrl() != null
+                && content.getLogoUrl() != null
+                && ! existingContent.getLogoUrl().equals(content.getLogoUrl()))
+                || (existingContent.getLogoUrl() == null && content.getLogoUrl() != null)) {
+            String logoURL = UploadFilesController.uploadFile(content.getLogoUrl());
+            content.setLogoUrl(logoURL);
+        }
+
+        if( (existingContent.getBannerUrl() != null
+                && content.getBannerUrl() != null
+                && ! existingContent.getBannerUrl().equals(content.getBannerUrl()))
+                || (existingContent.getBannerUrl() == null && content.getBannerUrl() != null)) {
+            String bannerURL = UploadFilesController.uploadFile(content.getBannerUrl());
+            content.setBannerUrl(bannerURL);
+        }
+
+        if( (existingContent.getThumbnailUrl() != null
+                && content.getThumbnailUrl() != null
+                && ! existingContent.getThumbnailUrl().equals(content.getThumbnailUrl()))
+                || (existingContent.getThumbnailUrl() == null && content.getThumbnailUrl() != null)) {
+            String thumbnailURL = UploadFilesController.uploadFile(content.getThumbnailUrl());
+            content.setThumbnailUrl(thumbnailURL);
+        }
 
         BeanUtils.copyProperties(content, existingContent, "id");
 
