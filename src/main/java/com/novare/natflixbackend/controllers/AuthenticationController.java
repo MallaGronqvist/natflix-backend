@@ -11,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "http://localhost:3000/registration/", methods = {RequestMethod.GET, RequestMethod.POST})
+//@CrossOrigin(origins = "http://localhost:3000/registration/", methods = {RequestMethod.GET, RequestMethod.POST})
 @RestController
 public class AuthenticationController {
 
