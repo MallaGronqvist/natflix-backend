@@ -14,10 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.List;
 
-// Don't forget define the origins
-// @CrossOrigin(origins = "http://localhost:3000", methods = {RequestMethod.GET, RequestMethod.POST})
 @RestController
 public class UploadFilesController {
     private static final Logger logger = LoggerFactory.getLogger(UploadFilesController.class);
