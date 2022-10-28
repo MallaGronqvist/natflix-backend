@@ -24,8 +24,9 @@ After that you can run the frontend.
 ## Branches
 
 I have worked in two branches. In the **master** -branch you can find a working version of the server that can handle requests
-related to the content. In the other branch called "**Auth**" I have worked on the sign up and sign in -endpoints.
+related to the content. 
 
+In the other branch called "**Auth**" I have worked on the sign up and sign in -endpoints.
 In the current version a request to sign up can be handled by the server and a user is created in the database.
 A request to sign in can be processed in the sense that the server can authorize the credentials, but for some
 reason it does not return a response body. I have been trying to solve this issue for three days, but unfortunately I have not been able to find the problem.
