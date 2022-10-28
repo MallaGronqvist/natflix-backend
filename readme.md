@@ -18,6 +18,9 @@ I have added example content to the database, and in order for you to be able to
 These tables can be found in the **Tables -folder**. Note that the database user should be "root" and the password needs
 to be "example", otherwise you will need to change these in the application.properties -file.
 
+Once the database containers are running, and you have imported the tables. You can run the spring boot app.
+After that you can run the frontend.
+
 ## Branches
 
 I have worked in two branches. In the **master** -branch you can find a working version of the server that can handle requests
