@@ -30,5 +30,6 @@ Hence, I have not been able to solve this last part that would have been needed 
 
 In the ProjectManagement -directory you can find table schemas that have been used in the planning of the database.
 You can also find a schema over the endpoints that has been used when building the REST API.
+No class diagram has been included because the project follows the usual Spring Boot framework's structure.
 Further, you can find a Project Management -spreadsheet that has been used to plan the work.
 
